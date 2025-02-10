@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   Text,
   Button,
-  Platform,
   Linking,
 } from "react-native";
 import { useLocation } from "@/hooks/useLocation";
@@ -18,9 +17,10 @@ export default function TabOneScreen() {
   const [searchCoords, setSearchCoords] = useState<{
     lat: number;
     lon: number;
+    name: string;
   } | null>(null);
 
-  const { locationPermissionError, location, refreshLocation } = useLocation();
+  const { locationPermissionError, location } = useLocation();
 
   const {
     data: weatherData,
@@ -30,6 +30,7 @@ export default function TabOneScreen() {
   } = useWeather({
     lat: searchCoords?.lat ?? location?.coords.latitude,
     lon: searchCoords?.lon ?? location?.coords.longitude,
+    cityName: searchCoords?.name,
   });
 
   useEffect(() => {
@@ -39,9 +40,9 @@ export default function TabOneScreen() {
   }, [locationPermissionError, location, refetch]);
 
   const handleCitySearch = async (city: string) => {
-    const coordinates = await fetchCityCoordinates(city);
-    if (coordinates) {
-      setSearchCoords(coordinates);
+    const cityData = await fetchCityCoordinates(city);
+    if (cityData) {
+      setSearchCoords(cityData);
     }
   };
 
@@ -69,7 +70,6 @@ export default function TabOneScreen() {
       </View>
     );
   }
-
   return (
     <View style={styles.container}>
       <SearchBar onSearch={handleCitySearch} />
