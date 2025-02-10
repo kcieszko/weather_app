@@ -8,7 +8,7 @@ export const useWeather = ({ lat, lon }: UseWeatherOptions) => {
   return useQuery({
     queryKey: ["weather", lat, lon],
     queryFn: () => {
-      if (lat === undefined || lon === undefined) {
+      if (!lat || !lon) {
         throw new Error("No coordinates provided");
       }
       return fetchWeather({ lat, lon });
