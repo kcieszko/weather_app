@@ -7,27 +7,37 @@ type Props = {
 };
 
 const getGradientColors = (
-  condition: string
+  condition: string,
+  icon: string
 ): [string, string, ...string[]] => {
+  const isNight = icon.endsWith("n");
+
   switch (condition.toLowerCase()) {
     case "clear":
-      return ["#4DA0B0", "#D39D38"];
+      return isNight ? ["#1c1c1c", "#2c3e50"] : ["#4DA0B0", "#D39D38"];
     case "clouds":
-      return ["#606c88", "#3f4c6b"];
+      return isNight ? ["#2c3e50", "#3f4c6b"] : ["#606c88", "#3f4c6b"];
     case "rain":
     case "drizzle":
-      return ["#616161", "#9bc5c3"];
+      return isNight ? ["#1F1C2C", "#4c6b8f"] : ["#616161", "#9bc5c3"];
     case "thunderstorm":
       return ["#232526", "#414345"];
     case "snow":
-      return ["#E6DADA", "#274046"];
+      return isNight ? ["#243949", "#517fa4"] : ["#E6DADA", "#274046"];
     default:
-      return ["#2193b0", "#6dd5ed"];
+      return isNight ? ["#1c1c1c", "#2c3e50"] : ["#2193b0", "#6dd5ed"];
   }
 };
 
+const getIconUrl = (icon: string): string => {
+  return `https://openweathermap.org/img/wn/${icon}@4x.png`;
+};
+
 export const WeatherDisplay = ({ weather }: Props) => {
-  const gradientColors = getGradientColors(weather.weather[0].main);
+  const gradientColors = getGradientColors(
+    weather.weather[0].main,
+    weather.weather[0].icon
+  );
 
   const windSpeedInKmh = Math.round(weather.wind.speed * 3.6);
 
@@ -37,7 +47,7 @@ export const WeatherDisplay = ({ weather }: Props) => {
       <Text style={styles.temperature}>{Math.round(weather.main.temp)}°C</Text>
       <Image
         source={{
-          uri: `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`,
+          uri: getIconUrl(weather.weather[0].icon),
         }}
         style={styles.weatherIcon}
       />
@@ -64,19 +74,31 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   temperature: {
     fontSize: 48,
     fontWeight: "bold",
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   weatherIcon: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
   },
   condition: {
     fontSize: 24,
     marginTop: 10,
     textTransform: "capitalize",
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   detailsContainer: {
     marginTop: 20,
@@ -85,5 +107,9 @@ const styles = StyleSheet.create({
   details: {
     fontSize: 16,
     marginVertical: 4,
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.2)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
 });
