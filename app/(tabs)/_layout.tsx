@@ -1,8 +1,8 @@
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
-
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { Feather } from "@expo/vector-icons";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -12,25 +12,46 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
-          },
-          default: {},
-        }),
+        tabBarStyle: {
+          ...Platform.select({
+            ios: {
+              position: "absolute",
+            },
+            android: {
+              elevation: 0,
+              height: 60,
+              paddingBottom: 8,
+            },
+          }),
+          backgroundColor: "rgba(255,255,255,0.1)",
+          borderTopColor: "transparent",
+        },
+        sceneStyle: { backgroundColor: "transparent" },
+        tabBarLabelStyle: {
+          ...Platform.select({
+            android: {
+              marginBottom: 4,
+            },
+          }),
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Weather",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="sun" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="favourites"
         options={{
-          title: "Explore",
+          title: "Favourites",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="heart" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
