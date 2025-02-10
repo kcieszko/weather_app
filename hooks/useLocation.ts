@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { useWeather } from "./useWeather";
+import { useEffect, useState, useCallback } from "react";
 import * as Location from "expo-location";
+import { AppState } from "react-native";
 
 export const useLocation = () => {
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -10,20 +10,41 @@ export const useLocation = () => {
     string | null
   >(null);
 
-  useEffect(() => {
-    async function getCurrentLocation() {
+  const checkPermissionsAndGetLocation = useCallback(async () => {
+    try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         setLocationPermissionError("Permission to access location was denied");
-        return;
+        return null;
       }
 
+      setLocationPermissionError(null);
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+      return location;
+    } catch (error) {
+      setLocationPermissionError("Error accessing location");
+      return null;
     }
-
-    getCurrentLocation();
   }, []);
 
-  return { locationPermissionError, location };
+  useEffect(() => {
+    checkPermissionsAndGetLocation();
+
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "active") {
+        checkPermissionsAndGetLocation();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [checkPermissionsAndGetLocation]);
+
+  return {
+    locationPermissionError,
+    location,
+    refreshLocation: checkPermissionsAndGetLocation,
+  };
 };
