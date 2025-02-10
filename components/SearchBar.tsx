@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Feather } from "@expo/vector-icons";
@@ -16,27 +23,30 @@ export const SearchBar = ({ onSearch }: Props) => {
     if (query.trim()) {
       onSearch(query.trim());
       setQuery("");
+      Keyboard.dismiss();
     }
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={[styles.input, { color: Colors[colorScheme ?? "light"].text }]}
-        placeholder="Search city..."
-        placeholderTextColor={Colors[colorScheme ?? "light"].icon}
-        value={query}
-        onChangeText={setQuery}
-        onSubmitEditing={handleSearch}
-      />
-      <TouchableOpacity onPress={handleSearch} style={styles.button}>
-        <Feather
-          name="search"
-          size={20}
-          color={Colors[colorScheme ?? "light"].icon}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <TextInput
+          style={[styles.input, { color: Colors[colorScheme ?? "light"].text }]}
+          placeholder="Search city..."
+          placeholderTextColor={Colors[colorScheme ?? "light"].icon}
+          value={query}
+          onChangeText={setQuery}
+          onSubmitEditing={handleSearch}
         />
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity onPress={handleSearch} style={styles.button}>
+          <Feather
+            name="search"
+            size={20}
+            color={Colors[colorScheme ?? "light"].icon}
+          />
+        </TouchableOpacity>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

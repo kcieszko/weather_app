@@ -5,6 +5,9 @@ import {
   Text,
   Button,
   Linking,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
 } from "react-native";
 import { useLocation } from "@/hooks/useLocation";
 import { useWeather } from "@/hooks/useWeather";
@@ -82,15 +85,31 @@ export default function TabOneScreen() {
     );
   }
 
-  return (
+  const content = (
     <View style={styles.container}>
       <SearchBar onSearch={handleCitySearch} />
       <WeatherDisplay weather={weatherData} />
     </View>
   );
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
+        style={[styles.wrapper, Platform.OS === "ios" && styles.iosWrapper]}
+      >
+        {content}
+      </View>
+    </TouchableWithoutFeedback>
+  );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
+  iosWrapper: {
+    position: "relative",
+  },
   container: {
     flex: 1,
     padding: 20,
