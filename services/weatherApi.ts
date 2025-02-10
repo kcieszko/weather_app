@@ -1,7 +1,7 @@
 import { Coordinates } from "@/types/common";
 import { WeatherResponse } from "@/types/weatherData";
 
-const API_KEY = process.env.EXPO_PUBLIC_OPEN_WEATHER_MAP_API_KEY;
+const API_KEY = "c930517040b8f3151e26a7ac9b58ea99";
 
 export const fetchWeather = async ({
   lat,
