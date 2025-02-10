@@ -12,6 +12,7 @@ import { WeatherDisplay } from "@/components/WeatherDisplay";
 import { SearchBar } from "@/components/SearchBar";
 import { useState, useEffect } from "react";
 import { fetchCityCoordinates } from "@/services/weatherApi";
+import { useWeatherStore } from "@/store/weatherStore";
 
 export default function TabOneScreen() {
   const [searchCoords, setSearchCoords] = useState<{
@@ -21,6 +22,7 @@ export default function TabOneScreen() {
   } | null>(null);
 
   const { locationPermissionError, location } = useLocation();
+  const { setWeather, setIsNight } = useWeatherStore();
 
   const {
     data: weatherData,
@@ -39,12 +41,21 @@ export default function TabOneScreen() {
     }
   }, [locationPermissionError, location, refetch]);
 
+  useEffect(() => {
+    if (weatherData) {
+      setWeather(weatherData);
+      setIsNight(weatherData.weather[0].icon.endsWith("n"));
+    }
+  }, [weatherData]);
+
   const handleCitySearch = async (city: string) => {
     const cityData = await fetchCityCoordinates(city);
     if (cityData) {
       setSearchCoords(cityData);
     }
   };
+
+  const isNight = weatherData?.weather[0]?.icon.endsWith("n") || false;
 
   if (locationPermissionError) {
     return (
@@ -70,6 +81,7 @@ export default function TabOneScreen() {
       </View>
     );
   }
+
   return (
     <View style={styles.container}>
       <SearchBar onSearch={handleCitySearch} />

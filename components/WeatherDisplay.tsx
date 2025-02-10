@@ -1,53 +1,20 @@
 import { View, StyleSheet, Image, Text } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { WeatherResponse } from "@/types/weatherData";
 
 type Props = {
   weather: WeatherResponse;
 };
 
-const getGradientColors = (
-  condition: string,
-  icon: string
-): [string, string, ...string[]] => {
-  const isNight = icon.endsWith("n");
-
-  switch (condition.toLowerCase()) {
-    case "clear":
-      return isNight ? ["#1c1c1c", "#2c3e50"] : ["#4DA0B0", "#D39D38"];
-    case "clouds":
-      return isNight ? ["#2c3e50", "#3f4c6b"] : ["#606c88", "#3f4c6b"];
-    case "rain":
-    case "drizzle":
-      return isNight ? ["#1F1C2C", "#4c6b8f"] : ["#616161", "#9bc5c3"];
-    case "thunderstorm":
-      return ["#232526", "#414345"];
-    case "snow":
-      return isNight ? ["#243949", "#517fa4"] : ["#E6DADA", "#274046"];
-    default:
-      return isNight ? ["#1c1c1c", "#2c3e50"] : ["#2193b0", "#6dd5ed"];
-  }
-};
-
-const getIconUrl = (icon: string): string => {
-  return `https://openweathermap.org/img/wn/${icon}@4x.png`;
-};
-
 export const WeatherDisplay = ({ weather }: Props) => {
-  const gradientColors = getGradientColors(
-    weather.weather[0].main,
-    weather.weather[0].icon
-  );
-
   const windSpeedInKmh = Math.round(weather.wind.speed * 3.6);
 
   return (
-    <LinearGradient colors={gradientColors} style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.city}>{weather.name}</Text>
       <Text style={styles.temperature}>{Math.round(weather.main.temp)}°C</Text>
       <Image
         source={{
-          uri: getIconUrl(weather.weather[0].icon),
+          uri: `https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`,
         }}
         style={styles.weatherIcon}
       />
@@ -59,7 +26,7 @@ export const WeatherDisplay = ({ weather }: Props) => {
         <Text style={styles.details}>Humidity: {weather.main.humidity}%</Text>
         <Text style={styles.details}>Wind: {windSpeedInKmh} km/h</Text>
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -69,6 +36,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "center",
     width: "100%",
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   city: {
     fontSize: 32,
