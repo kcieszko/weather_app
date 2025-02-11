@@ -41,9 +41,12 @@ export default function RootLayout() {
             screenOptions={{
               headerShown: false,
               contentStyle: { backgroundColor: "transparent" },
+              animation: 'slide_from_right',
+              presentation: 'card'
             }}
           >
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="weather-details" />
             <Stack.Screen name="+not-found" />
           </Stack>
           <StatusBar style="auto" />

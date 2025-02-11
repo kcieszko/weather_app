@@ -16,6 +16,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { useState, useEffect } from "react";
 import { fetchCityCoordinates } from "@/services/weatherApi";
 import { useWeatherStore } from "@/store/weatherStore";
+import { useFavourites } from "@/hooks/useFavourites";
 
 export default function TabOneScreen() {
   const [searchCoords, setSearchCoords] = useState<{
@@ -26,6 +27,7 @@ export default function TabOneScreen() {
 
   const { locationPermissionError, location } = useLocation();
   const { setWeather, setIsNight } = useWeatherStore();
+  const { loadFavourites } = useFavourites();
 
   const {
     data: weatherData,
@@ -51,6 +53,10 @@ export default function TabOneScreen() {
     }
   }, [weatherData]);
 
+  useEffect(() => {
+    loadFavourites();
+  }, [loadFavourites]);
+
   const handleCitySearch = async (city: string) => {
     const cityData = await fetchCityCoordinates(city);
     if (cityData) {
@@ -58,13 +64,11 @@ export default function TabOneScreen() {
     }
   };
 
-  const isNight = weatherData?.weather[0]?.icon.endsWith("n") || false;
-
   if (locationPermissionError) {
     return (
       <View style={styles.container}>
         <Text style={styles.error}>{locationPermissionError}</Text>
-        <Button title="Open Settings" onPress={() => Linking.openSettings()} />
+        <Button title="Open Settings" onPress={Linking.openSettings} />
       </View>
     );
   }
@@ -85,19 +89,15 @@ export default function TabOneScreen() {
     );
   }
 
-  const content = (
-    <View style={styles.container}>
-      <SearchBar onSearch={handleCitySearch} />
-      <WeatherDisplay weather={weatherData} />
-    </View>
-  );
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View
         style={[styles.wrapper, Platform.OS === "ios" && styles.iosWrapper]}
       >
-        {content}
+        <View style={styles.container}>
+          <SearchBar onSearch={handleCitySearch} />
+          <WeatherDisplay weather={weatherData} />
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
