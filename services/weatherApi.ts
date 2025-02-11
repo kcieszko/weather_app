@@ -61,3 +61,26 @@ export const fetchWeather = async ({
     throw new Error("Failed to fetch weather data");
   }
 };
+
+export const fetchWeatherForFavourites = async (
+  cities: { lat: number; lon: number; name: string }[]
+): Promise<WeatherResponse[]> => {
+  try {
+    const weatherPromises = cities.map((city) =>
+      fetchWeather({
+        lat: city.lat,
+        lon: city.lon,
+        cityName: city.name,
+      })
+    );
+
+    return await Promise.all(weatherPromises);
+  } catch (error: any) {
+    console.error("Error fetching weather for favourites:", error);
+    Alert.alert(
+      "Error",
+      "Failed to fetch weather data for favourites. Please try again later."
+    );
+    return [];
+  }
+};

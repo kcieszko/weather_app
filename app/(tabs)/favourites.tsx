@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
+import { FavouritesList } from "@/components/FavouritesList";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function FavouritesScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Favourites</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <FavouritesList />
+    </SafeAreaView>
   );
 }
 
@@ -12,10 +14,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "transparent",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    color: "#fff",
   },
 });

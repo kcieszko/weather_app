@@ -1,16 +1,54 @@
-import { View, StyleSheet, Image, Text } from "react-native";
+import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 import { WeatherResponse } from "@/types/weatherData";
+import { useFavourites } from "@/hooks/useFavourites";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import { useCallback, useMemo } from "react";
 
 type Props = {
   weather: WeatherResponse;
+  onRemoveFromFavourites?: () => void;
 };
 
-export const WeatherDisplay = ({ weather }: Props) => {
+export const WeatherDisplay = ({ weather, onRemoveFromFavourites }: Props) => {
+  const { isFavourite, addToFavourites, removeFromFavourites } =
+    useFavourites();
   const windSpeedInKmh = Math.round(weather.wind.speed * 3.6);
+  const isFav = isFavourite(weather.name);
+
+  console.log({ isFav });
+
+  const toggleFavourite = useCallback(async () => {
+    if (isFav) {
+      await removeFromFavourites(weather.name);
+      onRemoveFromFavourites?.();
+    } else {
+      await addToFavourites(weather);
+    }
+  }, [
+    isFav,
+    weather,
+    addToFavourites,
+    removeFromFavourites,
+    onRemoveFromFavourites,
+  ]);
+
+  const heartIcon = useMemo(() => {
+    return (
+      <AntDesign name={isFav ? "heart" : "hearto"} size={24} color="#fff" />
+    );
+  }, [isFav]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.city}>{weather.name}</Text>
+      <View style={styles.header}>
+        <Text style={styles.city}>{weather.name}</Text>
+        <TouchableOpacity
+          onPress={toggleFavourite}
+          style={styles.favouriteButton}
+        >
+          {heartIcon}
+        </TouchableOpacity>
+      </View>
       <Text style={styles.temperature}>{Math.round(weather.main.temp)}°C</Text>
       <Image
         source={{
@@ -41,7 +79,6 @@ const styles = StyleSheet.create({
   city: {
     fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 10,
     color: "#fff",
     textShadowColor: "rgba(0, 0, 0, 0.3)",
     textShadowOffset: { width: 1, height: 1 },
@@ -79,5 +116,17 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.2)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    marginBottom: 10,
+  },
+  favouriteButton: {
+    position: "absolute",
+    right: 0,
+    padding: 10,
   },
 });
