@@ -46,14 +46,3 @@ Follow these instructions to run the application:
     ```
 
     This will open the Expo development environment in your browser, where you can choose to run the app on an Android emulator, iOS simulator, or a physical device using the Expo Go app.
-
-## Learn More
-
-To learn more about developing your project with Expo, refer to the [Expo documentation](https://docs.expo.dev/).
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
