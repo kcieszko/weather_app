@@ -1,7 +1,7 @@
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 import { WeatherResponse } from "@/types/weatherData";
 import { useFavourites } from "@/hooks/useFavourites";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { useCallback, useMemo } from "react";
 
 type Props = {
@@ -43,6 +43,7 @@ export const WeatherDisplay = ({ weather, onRemoveFromFavourites }: Props) => {
         <TouchableOpacity
           onPress={toggleFavourite}
           style={styles.favouriteButton}
+          testID="favourite-button"
         >
           {heartIcon}
         </TouchableOpacity>

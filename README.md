@@ -46,3 +46,19 @@ Follow these instructions to run the application:
     ```
 
     This will open the Expo development environment in your browser, where you can choose to run the app on an Android emulator, iOS simulator, or a physical device using the Expo Go app.
+
+## Running Tests
+
+To run the tests, use the following command:
+
+```bash
+npm test
+```
+
+or
+
+```bash
+yarn test
+```
+
+This will execute the test suite and display the results.
