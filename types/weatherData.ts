@@ -58,3 +58,19 @@ export type WeatherResponse = {
   name: string;
   cod: number;
 };
+
+export type DailyForecast = {
+  dt: number;
+  temp: {
+    min: number;
+    max: number;
+  };
+  weather: {
+    icon: string;
+    description: string;
+  }[];
+};
+
+export type ForecastResponse = {
+  daily: DailyForecast[];
+};

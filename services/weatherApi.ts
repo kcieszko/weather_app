@@ -1,5 +1,9 @@
 import { Coordinates } from "@/types/common";
-import { WeatherResponse } from "@/types/weatherData";
+import {
+  DailyForecast,
+  ForecastResponse,
+  WeatherResponse,
+} from "@/types/weatherData";
 import { Alert } from "react-native";
 
 const API_KEY = process.env.EXPO_PUBLIC_OPEN_WEATHER_MAP_API_KEY;
@@ -82,5 +86,59 @@ export const fetchWeatherForFavourites = async (
       "Failed to fetch weather data for favourites. Please try again later."
     );
     return [];
+  }
+};
+
+export const fetchForecast = async ({
+  lat,
+  lon,
+}: Coordinates): Promise<ForecastResponse> => {
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=en`
+    );
+    if (!res.ok) {
+      throw new Error("Error getting forecast data");
+    }
+    const data = await res.json();
+
+    const dailyData: DailyForecast[] = data.list
+      .reduce((acc: DailyForecast[], item: any) => {
+        const date = new Date(item.dt * 1000).setHours(0, 0, 0, 0);
+
+        if (
+          !acc.find(
+            (day: DailyForecast) =>
+              new Date(day.dt * 1000).setHours(0, 0, 0, 0) === date
+          )
+        ) {
+          acc.push({
+            dt: item.dt,
+            temp: {
+              min: item.main.temp_min,
+              max: item.main.temp_max,
+            },
+            weather: [
+              {
+                icon: item.weather[0].icon,
+                description: item.weather[0].description,
+              },
+            ],
+          });
+        }
+        return acc;
+      }, [])
+      .slice(0, 6);
+
+    return {
+      daily: dailyData,
+    };
+  } catch (error: any) {
+    console.error("Error fetching forecast data:", error);
+    Alert.alert(
+      "Error",
+      "Failed to fetch forecast data. Please try again later."
+    );
+    throw new Error("Failed to fetch forecast data");
   }
 };

@@ -1,22 +1,23 @@
-import {
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Text,
-  Button,
-  Linking,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-} from "react-native";
-import { useLocation } from "@/hooks/useLocation";
-import { useWeather } from "@/hooks/useWeather";
-import { WeatherDisplay } from "@/components/WeatherDisplay";
+import { ForecastDisplay } from "@/components/ForecastDisplay";
 import { SearchBar } from "@/components/SearchBar";
-import { useState, useEffect } from "react";
+import { WeatherDisplay } from "@/components/WeatherDisplay";
+import { useFavourites } from "@/hooks/useFavourites";
+import { useLocation } from "@/hooks/useLocation";
+import { useWeather, useForecast } from "@/hooks/useWeather";
 import { fetchCityCoordinates } from "@/services/weatherApi";
 import { useWeatherStore } from "@/store/weatherStore";
-import { useFavourites } from "@/hooks/useFavourites";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Button,
+  Linking,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TabOneScreen() {
   const [searchCoords, setSearchCoords] = useState<{
@@ -31,20 +32,29 @@ export default function TabOneScreen() {
 
   const {
     data: weatherData,
-    isLoading,
-    error,
-    refetch,
+    isLoading: isWeatherLoading,
+    error: weatherError,
+    refetch: refetchWeather,
   } = useWeather({
     lat: searchCoords?.lat ?? location?.coords.latitude,
     lon: searchCoords?.lon ?? location?.coords.longitude,
     cityName: searchCoords?.name,
   });
 
+  const {
+    data: forecastData,
+    isLoading: isForecastLoading,
+    error: forecastError,
+  } = useForecast({
+    lat: searchCoords?.lat ?? location?.coords.latitude,
+    lon: searchCoords?.lon ?? location?.coords.longitude,
+  });
+
   useEffect(() => {
     if (!locationPermissionError && location) {
-      refetch();
+      refetchWeather();
     }
-  }, [locationPermissionError, location, refetch]);
+  }, [locationPermissionError, location, refetchWeather]);
 
   useEffect(() => {
     if (weatherData) {
@@ -73,7 +83,7 @@ export default function TabOneScreen() {
     );
   }
 
-  if (isLoading) {
+  if (isWeatherLoading) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#0a7ea4" />
@@ -81,7 +91,7 @@ export default function TabOneScreen() {
     );
   }
 
-  if (error || !weatherData) {
+  if (weatherError || !weatherData) {
     return (
       <View style={styles.container}>
         <Text style={styles.error}>Failed to fetch weather data</Text>
@@ -90,16 +100,21 @@ export default function TabOneScreen() {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View
-        style={[styles.wrapper, Platform.OS === "ios" && styles.iosWrapper]}
+    <SafeAreaView
+      style={[styles.wrapper, Platform.OS === "ios" && styles.iosWrapper]}
+    >
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
       >
-        <View style={styles.container}>
-          <SearchBar onSearch={handleCitySearch} />
-          <WeatherDisplay weather={weatherData} />
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
+        <SearchBar onSearch={handleCitySearch} />
+        {weatherData && <WeatherDisplay weather={weatherData} />}
+        {forecastData?.daily && !isForecastLoading && (
+          <ForecastDisplay forecast={forecastData.daily.slice(1)} />
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -112,9 +127,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    width: "100%",
+  },
+  contentContainer: {
     padding: 20,
     alignItems: "center",
-    justifyContent: "center",
   },
   error: {
     color: "red",
