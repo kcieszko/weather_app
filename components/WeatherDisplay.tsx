@@ -15,8 +15,6 @@ export const WeatherDisplay = ({ weather, onRemoveFromFavourites }: Props) => {
   const windSpeedInKmh = Math.round(weather.wind.speed * 3.6);
   const isFav = isFavourite(weather.name);
 
-  console.log({ isFav });
-
   const toggleFavourite = useCallback(async () => {
     if (isFav) {
       await removeFromFavourites(weather.name);
@@ -70,14 +68,14 @@ export const WeatherDisplay = ({ weather, onRemoveFromFavourites }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 15,
     borderRadius: 15,
     alignItems: "center",
     width: "100%",
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   city: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
     color: "#fff",
     textShadowColor: "rgba(0, 0, 0, 0.3)",
@@ -85,7 +83,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   temperature: {
-    fontSize: 48,
+    fontSize: 42,
     fontWeight: "bold",
     color: "#fff",
     textShadowColor: "rgba(0, 0, 0, 0.3)",
@@ -93,11 +91,11 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   weatherIcon: {
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
   },
   condition: {
-    fontSize: 24,
+    fontSize: 20,
     marginTop: 10,
     textTransform: "capitalize",
     color: "#fff",

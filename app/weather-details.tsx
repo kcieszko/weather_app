@@ -37,28 +37,19 @@ export default function WeatherDetailsScreen() {
   }
 
   return (
-    <View style={styles.wrapper}>
-      <SafeAreaView style={styles.container}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <AntDesign name="arrowleft" size={24} color="#fff" />
-        </TouchableOpacity>
-        <WeatherDisplay
-          weather={weatherData}
-          onRemoveFromFavourites={handleRemoveFromFavourites}
-        />
-      </SafeAreaView>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={router.back}>
+        <AntDesign name="arrowleft" size={24} color="#fff" />
+      </TouchableOpacity>
+      <WeatherDisplay
+        weather={weatherData}
+        onRemoveFromFavourites={handleRemoveFromFavourites}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    backgroundColor: "transparent",
-  },
   container: {
     flex: 1,
     padding: 20,

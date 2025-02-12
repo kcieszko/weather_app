@@ -1,10 +1,10 @@
 import { create } from "zustand";
-import { WeatherResponse } from "@/types/weatherData";
+import { ForecastResponse, WeatherResponse } from "@/types/weatherData";
 
 type WeatherState = {
-  weather: WeatherResponse | null;
+  weather: WeatherResponse | ForecastResponse | null;
   isNight: boolean;
-  setWeather: (weather: WeatherResponse | null) => void;
+  setWeather: (weather: WeatherResponse | ForecastResponse | null) => void;
   setIsNight: (isNight: boolean) => void;
 };
 
