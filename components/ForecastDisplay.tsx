@@ -21,7 +21,7 @@ export const ForecastDisplay = ({ forecast }: Props) => {
         contentContainerStyle={styles.scrollContainer}
       >
         {forecast.map((day) => (
-          <View key={day.dt} style={styles.dayContainer}>
+          <View key={day.dt} style={styles.dayContainer} testID="day-container">
             <Text style={styles.dayName}>{getDayName(day.dt)}</Text>
             <Image
               source={{
